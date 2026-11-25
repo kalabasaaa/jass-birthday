@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Birthday Surprise 🎂</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #100d20, #29152e, #111827);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    padding: 35px 25px;
+    border: 1px solid #ffffff25;
+    border-radius: 25px;
+    background: #ffffff0c;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 50px #ed62a522;
+    animation: appear 1s ease;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    color: #ff9bc8;
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+h2 {
+    color: #ffc0df;
+    margin-bottom: 20px;
+}
+
+p {
+    color: #e5dce9;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.emoji {
+    font-size: 65px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+button {
+    background: linear-gradient(45deg, #ed68a5, #a45ce8);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 25px;
+    margin: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 20px #ed68a5;
+}
+
+.option {
+    display: block;
+    width: 100%;
+    margin: 12px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+#progress {
+    color: #ffadd3;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.message {
+    font-size: 18px;
+    color: #ffd1e6;
+    line-height: 1.9;
+}
+
+#surprise {
+    font-size: 55px;
+    margin: 20px;
+}
+
+.heart {
+    position: fixed;
+    bottom: -30px;
+    animation: floatUp 7s linear infinite;
+    pointer-events: none;
+    opacity: 0.5;
+    z-index: 1;
+}
+
+@keyframes floatUp {
+    to {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+footer {
+    margin-top: 25px;
+    font-size: 12px;
+    color: #a99bad;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- WELCOME -->
+    <section id="welcome">
+        <div class="emoji">🎂</div>
+        <h1>Happy Birthday!</h1>
+        <p>
+            Today is your special day.<br>
+            I made a little game for you.<br>
+            Ready for a tiny adventure?
+        </p>
+        <button onclick="startGame()">Let's Play ✨</button>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="game" class="hidden">
+        <div class="emoji">🎮</div>
+        <h2 id="question"></h2>
+        <div id="progress"></div>
+        <div id="answers"></div>
+        <p id="feedback"></p>
+    </section>
+
+    <!-- RESULT -->
+    <section id="result" class="hidden">
+        <div class="emoji">🏆</div>
+        <h1>You Did It!</h1>
+        <p>You completed your birthday challenge!</p>
+        <button onclick="showSurprise()">Open Your Surprise 🎁</button>
+    </section>
+
+    <!-- SURPRISE -->
+    <section id="final" class="hidden">
+        <div id="surprise">🎉🎂🎁</div>
+        <h1>Happy Birthday!</h1>
+
+        <p class="message">
+            I hope this new chapter brings you happiness,
+            beautiful memories, success and countless reasons
+            to smile.
+
+            <br><br>
+
+            No matter where life takes us,
+            I genuinely wish you the best.
+
+            <br><br>
+
+            Keep shining and never stop being yourself.
+
+            <br><br>
+
+            Have an amazing birthday jass ! 💗
+        </p>
+
+        <button onclick="celebrate()">One Last Surprise ✨</button>
+        <p id="lastMessage"></p>
+    </section>
+
+    <footer>Made with good wishes ✨</footer>
+</div>
+
+<script>
+
+const questions = [
+    {
+        question: "🎀 What's the best birthday gift?",
+        answers: ["A beautiful memory", "A new phone", "A giant cake"],
+        correct: 0
+    },
+    {
+        question: "🌟 What makes a day special?",
+        answers: ["Good memories", "Expensive things", "Sleeping all day"],
+        correct: 0
+    },
+    {
+        question: "🎂 What's the most important thing today?",
+        answers: ["Being happy", "Getting older", "Eating everything"],
+        correct: 0
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function startGame() {
+    document.getElementById("welcome").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = questions[currentQuestion];
+
+    document.getElementById("question").textContent = q.question;
+    document.getElementById("progress").textContent =
+        "Question " + (currentQuestion + 1) + " / " + questions.length;
+
+    document.getElementById("feedback").textContent = "";
+
+    const answers = document.getElementById("answers");
+    answers.innerHTML = "";
+
+    q.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.textContent = answer;
+        button.className = "option";
+
+        button.onclick = () => checkAnswer(index);
+        answers.appendChild(button);
+    });
+}
+
+function checkAnswer(index) {
+    if (index === questions[currentQuestion].correct) {
+        score++;
+    }
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+        showQuestion();
+    } else {
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("result").classList.remove("hidden");
+    }
+}
+
+function showSurprise() {
+    document.getElementById("result").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+    celebrate();
+}
+
+function celebrate() {
+    document.getElementById("lastMessage").textContent =
+        "✨ Wishing you a year full of beautiful moments! ✨";
+
+    for (let i = 0; i < 35; i++) {
+        const confetti = document.createElement("div");
+
+        confetti.textContent =
+            ["💗", "✨", "🎉", "💖", "⭐"][Math.floor(Math.random() * 5)];
+
+        confetti.style.position = "fixed";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.top = "-30px";
+        confetti.style.fontSize = "25px";
+        confetti.style.zIndex = "10";
+        confetti.style.pointerEvents = "none";
+        confetti.style.transition = "transform 3s ease, opacity 3s";
+
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+            confetti.style.transform =
+                "translateY(110vh) rotate(500deg)";
+            confetti.style.opacity = "0";
+        }, 50);
+
+        setTimeout(() => confetti.remove(), 3200);
+    }
+}
+
+// Floating hearts in the background
+setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "💗";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (15 + Math.random() * 20) + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 7000);
+}, 800);
+
+</script>
+
+</body>
+</html>
